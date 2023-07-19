@@ -16,6 +16,9 @@ function verificarLogin(req, res, next) {
     res.status(401).send('Acesso não autorizado. Faça o login primeiro.');
   }
 }
+app.get("/", (req, res)=> {
+  res.send('Olá')
+})
 
 //  ROTA CRIAR USUÁRIO - ok
 app.post("/cadastrar-usuario",(req, res) => {
@@ -70,7 +73,7 @@ app.get("/login/:idUsuario", (req, res) => {
   } else {
     if (encontrarUsuario) {
       if (encontrarUsuario.email === email && encontrarUsuario.senha === senha) {
-        
+
         logado=true
         encontrarUsuario.logado = true
         console.log("--- Login efetuado ---");
