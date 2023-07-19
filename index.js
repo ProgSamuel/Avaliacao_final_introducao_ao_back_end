@@ -4,14 +4,18 @@ app.use(express.json());
 
 const usuariosCadastrados = [];
 let idUsuario = 0;
-const recados = []
+const recados = [];
 let idRecado = 0;
+let logado
+
 
 //  ROTA CRIAR USUÁRIO - ok
 app.post("/cadastrar-usuario",(req, res) => {
   const nome = req.body.nome;
   const email = req.body.email;
   const senha = req.body.senha;
+
+
   const novousuario = { nome, email, senha, idUsuario, recados };
 
   if (nome === undefined || email === undefined || senha === undefined) {
@@ -77,8 +81,8 @@ app.get("/cadastrados", (req, res)=> {
 app.post("/criarRecado/:idUsuario", (req, res)=> {
   const idUsuario = parseInt(req.params.idUsuario); 
   const encontrarUsuario = usuariosCadastrados.find((usuario) => usuario.idUsuario === idUsuario);
-
   if(!encontrarUsuario){ res.send('Usuário não encontrado')}
+
   const titulo = req.body.titulo
   const descricao = req.body.descricao
   const novoRecado = { titulo, descricao, idRecado, idUsuario}
@@ -109,6 +113,7 @@ app.get("/recados/:idUsuario", (req, res) => {
   if (!usuario) {
     res.status(404).json({ error: "Usuario não encontrado" });
   } else {
+
     res.status(200).json({ mensagem: "Recados encontrados", recados: recadosDoUsuario });
   }
 });
