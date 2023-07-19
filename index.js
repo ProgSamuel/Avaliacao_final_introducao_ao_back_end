@@ -10,9 +10,8 @@ var logado = false;
 
 // Middleware para VERIFICAR se o usuário está logado
 function verificarLogin(req, res, next) {
-  const verificarLog = logado
-  if (verificarLog) {
-    next();
+    if (logado) {
+      next();
   } else {
     res.status(401).send('Acesso não autorizado. Faça o login primeiro.');
   }
@@ -71,8 +70,9 @@ app.get("/login/:idUsuario", (req, res) => {
   } else {
     if (encontrarUsuario) {
       if (encontrarUsuario.email === email && encontrarUsuario.senha === senha) {
-
-        encontrarUsuario.logado = true;
+        
+        logado=true
+        encontrarUsuario.logado = true
         console.log("--- Login efetuado ---");
         console.log(usuariosCadastrados);
         res.send('Login efetuado com sucesso');
