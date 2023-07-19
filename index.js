@@ -17,7 +17,7 @@ function verificarLogin(req, res, next) {
   }
 }
 app.get("/", (req, res)=> {
-  res.send('Olá')
+  res.send('Bem vindo a API Recados!')
 })
 
 //  ROTA CRIAR USUÁRIO - ok
