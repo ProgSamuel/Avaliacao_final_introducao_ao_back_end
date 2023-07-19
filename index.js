@@ -6,8 +6,17 @@ const usuariosCadastrados = [];
 let idUsuario = 0;
 const recados = [];
 let idRecado = 0;
-let logado
+var logado = false;
 
+// Middleware para VERIFICAR se o usuário está logado
+function verificarLogin(req, res, next) {
+  const verificarLog = logado
+  if (verificarLog) {
+    next();
+  } else {
+    res.status(401).send('Acesso não autorizado. Faça o login primeiro.');
+  }
+}
 
 //  ROTA CRIAR USUÁRIO - ok
 app.post("/cadastrar-usuario",(req, res) => {
@@ -16,7 +25,7 @@ app.post("/cadastrar-usuario",(req, res) => {
   const senha = req.body.senha;
 
 
-  const novousuario = { nome, email, senha, idUsuario, recados };
+  const novousuario = { nome, email, senha, idUsuario, recados, logado };
 
   if (nome === undefined || email === undefined || senha === undefined) {
     res.send(`Insira um dado válido. Veja o exemplo abaixo:
@@ -62,7 +71,13 @@ app.get("/login/:idUsuario", (req, res) => {
   } else {
     if (encontrarUsuario) {
       if (encontrarUsuario.email === email && encontrarUsuario.senha === senha) {
+
+        encontrarUsuario.logado = true;
+        console.log("--- Login efetuado ---");
+        console.log(usuariosCadastrados);
         res.send('Login efetuado com sucesso');
+        return 
+
       } else {
         res.send('Verifique as informações e tente novamente');
       }
@@ -73,12 +88,12 @@ app.get("/login/:idUsuario", (req, res) => {
 });
 
 //ROTA LISTAR USUARIOS CADASTRADOS - ok
-app.get("/cadastrados", (req, res)=> {
+app.get("/cadastrados", verificarLogin,(req, res)=> {
   res.json(usuariosCadastrados)
 })
 
 //ROTA  CRIAR RECADOS - ok 
-app.post("/criarRecado/:idUsuario", (req, res)=> {
+app.post("/criarRecado/:idUsuario", verificarLogin, (req, res)=> {
   const idUsuario = parseInt(req.params.idUsuario); 
   const encontrarUsuario = usuariosCadastrados.find((usuario) => usuario.idUsuario === idUsuario);
   if(!encontrarUsuario){ res.send('Usuário não encontrado')}
@@ -104,7 +119,7 @@ app.post("/criarRecado/:idUsuario", (req, res)=> {
 })
 
 //Rota para LISTAR recados de um usuario - ok 
-app.get("/recados/:idUsuario", (req, res) => {
+app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
   const idUsuario = parseInt(req.params.idUsuario);
 
   const usuario = usuariosCadastrados.find((user) => user.idUsuario === idUsuario);
@@ -119,7 +134,7 @@ app.get("/recados/:idUsuario", (req, res) => {
 });
 
 //Rota para editar um recado pelo ID -ok
-app.put("/recados/:idUsuario/:idRecado", (req, res)=>{
+app.put("/recados/:idUsuario/:idRecado", verificarLogin,(req, res)=>{
   const userId = req.params.idUsuario;
   const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(userId));
   if (!user) {
@@ -144,7 +159,7 @@ app.put("/recados/:idUsuario/:idRecado", (req, res)=>{
 })
 
 //Rota para deletar um recado pelo ID - ok
-app.delete("/recados/:idUsuario/:idRecado", (req, res) => {
+app.delete("/recados/:idUsuario/:idRecado",verificarLogin,(req, res) => {
   const userId = req.params.idUsuario;
   const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(userId));
 

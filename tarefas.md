@@ -30,10 +30,10 @@
              => Verificações
                 [ ok ] Título && Descrição !undefined
                 [ ok ] Criar recado
-                [ ] Para cadastrar o recado, o user deve está cadastrado e logado
+    =>          [ ] Para cadastrar o recado, o user deve está cadastrado e logado
                 [ ok ] Cada recado deve ser de um único usuário
-                [ ] editar recado
-                [ ] apagar recado
+    =>          [ ] editar recado
+    =>          [ ] apagar recado
 
 
 
