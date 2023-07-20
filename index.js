@@ -6,11 +6,11 @@ const usuariosCadastrados = [];
 let idUsuario = 0;
 const recados = [];
 let idRecado = 0;
-var logado = false;
+var userlogged 
 
 // Middleware para VERIFICAR se o usuário está logado
 function verificarLogin(req, res, next) {
-    if (logado) {
+    if (userlogged) {
       next();
   } else {
     res.status(401).send('Acesso não autorizado. Faça o login primeiro.');
@@ -27,7 +27,7 @@ app.post("/cadastrar-usuario",(req, res) => {
   const senha = req.body.senha;
 
 
-  const novousuario = { nome, email, senha, idUsuario, recados, logado };
+  const novousuario = { nome, email, senha, idUsuario, recados, userlogged };
 
   if (nome === undefined || email === undefined || senha === undefined) {
     res.send(`Insira um dado válido. Veja o exemplo abaixo:
@@ -74,8 +74,7 @@ app.get("/login/:idUsuario", (req, res) => {
     if (encontrarUsuario) {
       if (encontrarUsuario.email === email && encontrarUsuario.senha === senha) {
 
-        logado=true
-        encontrarUsuario.logado = true
+        userlogged = encontrarUsuario.idUsuario
         console.log("--- Login efetuado ---");
         console.log(usuariosCadastrados);
         res.send('Login efetuado com sucesso');
@@ -95,13 +94,15 @@ app.get("/cadastrados", verificarLogin,(req, res)=> {
   res.json(usuariosCadastrados)
 })
 
-//ROTA  CRIAR RECADOS - ok 
+//ROTA  CRIAR RECADOS - ok - ok
 app.post("/criarRecado/:idUsuario", verificarLogin, (req, res)=> {
   const idUsuario = parseInt(req.params.idUsuario); 
   const encontrarUsuario = usuariosCadastrados.find((usuario) => usuario.idUsuario === idUsuario);
   if(!encontrarUsuario){ res.send('Usuário não encontrado')}
-
-  const titulo = req.body.titulo
+  if(idUsuario !== userlogged ){
+    res.send('Usuário não autorizado')
+  } else {
+    const titulo = req.body.titulo
   const descricao = req.body.descricao
   const novoRecado = { titulo, descricao, idRecado, idUsuario}
 
@@ -119,11 +120,18 @@ app.post("/criarRecado/:idUsuario", verificarLogin, (req, res)=> {
     console.log(recados);
     console.log(`----------------------`);
   }
+  }
+
+
+  
 })
 
-//Rota para LISTAR recados de um usuario - ok 
+//Rota para LISTAR recados de um usuario - ok - ok
 app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
   const idUsuario = parseInt(req.params.idUsuario);
+  if(idUsuario !== userlogged ){
+    res.send('Usuário não autorizado')
+  }
 
   const usuario = usuariosCadastrados.find((user) => user.idUsuario === idUsuario);
   const recadosDoUsuario = recados.filter((recado) => recado.idUsuario === idUsuario);
@@ -136,40 +144,50 @@ app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
   }
 });
 
-//Rota para editar um recado pelo ID -ok
+//Rota para editar um recado pelo ID -ok - ok
 app.put("/recados/:idUsuario/:idRecado", verificarLogin,(req, res)=>{
-  const userId = req.params.idUsuario;
-  const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(userId));
+  const idUsuario = req.params.idUsuario;
+  const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(idUsuario));
   if (!user) {
     res.status(404);
     res.send({ error: "Usuario não encontrado" });
   }
+  
 
   const id = req.params.idRecado;
   const titulo = req.body.titulo;
   const descricao = req.body.descricao;
   const recado = user.recados.find((recado) => recado.idRecado === parseInt(id));
 
-  if (!recado) {
-    res.status(404);
-    res.send({ error: "Recado não encontrado" });
+  if(idUsuario == userlogged){
+    if (!recado) {
+      res.status(404);
+      res.send({ error: "Recado não encontrado" });
+    }
+  
+    recado.titulo = titulo || recado.titulo;
+    recado.descricao = descricao || recado.descricao;
+  
+    res.send({ mensagem: "Recado alterado", recado: recado });
+    
+  } if(idUsuario!== userlogged){
+    res.send('Usuário não autorizado')
   }
 
-  recado.titulo = titulo || recado.titulo;
-  recado.descricao = descricao || recado.descricao;
-
-  res.send({ mensagem: "Recado alterado", recado: recado });
 })
 
-//Rota para deletar um recado pelo ID - ok
+//Rota para deletar um recado pelo ID - ok - verificar autorização
 app.delete("/recados/:idUsuario/:idRecado",verificarLogin,(req, res) => {
-  const userId = req.params.idUsuario;
-  const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(userId));
+  const idUsuario = req.params.idUsuario;
+  const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(idUsuario));
 
   if (!user) {
     res.status(404);
     res.send({ error: "Usuario não encontrado" });
     return;
+  }
+  if(idUsuario !== userlogged ){
+    res.send('Usuário não autorizado')
   }
 
   const id = req.params.idRecado;
@@ -184,7 +202,6 @@ app.delete("/recados/:idUsuario/:idRecado",verificarLogin,(req, res) => {
   user.recados.splice(index, 1);
   res.send("Recado removido com sucesso!" + recados);
 });
-
 
 app.listen(3000, () => {
   console.log("Acesso a porta 3000 concuído com sucesso");
