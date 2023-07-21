@@ -10,7 +10,7 @@
 
             => Verificações
                 [ ok ] Nome && E-mail && Senha tem que ser !undefined
-                [ ok ] E-mail !e-mail cadastrado
+                [ ok ] E-mail !e-mail-cadastrado
 
 # Login
 
@@ -19,7 +19,7 @@
 
              => Verificações
                 [ok] E-mail && Senha tem que ser !undefined
-                [ok] E-mail && Senha === a user cadastrado
+                [ok] E-mail && Senha === a user-cadastrado
 
 # CRUD de recados (Criar, Listar, Atualizar e Apagar)
 
@@ -30,14 +30,11 @@
              => Verificações
                 [ ok ] Título && Descrição !undefined
                 [ ok ] Criar recado
-    =>          [ ] Para cadastrar o recado, o user deve está cadastrado e logado
+    =>          [ ok ] Para cadastrar o recado, o user deve está cadastrado e logado
                 [ ok ] Cada recado deve ser de um único usuário
-    =>          [ ] editar recado
-    =>          [ ] apagar recado
+    =>          [ ok ] editar recado
+    =>          [ ok ] apagar recado
 
 
 
-# Falta
-//Rota para editar um recado pelo ID
-//Rota para deletar um recado pelo ID
 
