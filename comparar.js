@@ -28,6 +28,7 @@ app.delete("/recados/:idUsuario/:idRecado",verificarLogin,(req, res) => {
 
 });
 
+//
 app.delete("/delete/:idUsuario", verificarLogin, (req, res)=>{
   const idUsuario = req.params.idUsuario;
   const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(idUsuario));
@@ -46,3 +47,4 @@ app.delete("/delete/:idUsuario", verificarLogin, (req, res)=>{
       res.send("Usuario removido com sucesso!");
 }
 })
+
