@@ -236,7 +236,7 @@ app.delete("/recados/:idUsuario/:idRecado",verificarLogin,(req, res) => {
   
 });
 
-//Rota para Sair do CRUD
+//Rota para deletar perfil do CRUD
 app.delete("/delete/:idUsuario", verificarLogin, (req, res) => {
   const idUsuario = parseInt(req.params.idUsuario); 
   const user = usuariosCadastrados.find((user) => user.idUsuario === idUsuario);
@@ -255,25 +255,24 @@ app.delete("/delete/:idUsuario", verificarLogin, (req, res) => {
   return res.status(401).json({ error: "Usuário " + idUsuario +" não autorizado" });
 });
 
+// Rota sair do crud
+app.delete("/sair/:idUsuario", verificarLogin, (req, res) => {
+  const idUsuario = parseInt(req.params.idUsuario);
 
-app.delete("/sair/:idUsuario", verificarLogin, (req, res)=>{
-  const idUsuario = req.params.idUsuario;
-  const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(idUsuario));
-  if (!user) {
-    res.status(404).json({ error: "Usuário não encontrado" });
+  const indexToRemove = usuariosCadastrados.findIndex((user) => user.idUsuario === idUsuario);
+  if (indexToRemove === -1) {
+    return res.status(404).json({ error: "Usuário " + idUsuario +  "  não encontrado" });
   }
 
-  if(idUsuario !== userlogged ){
-    res.status(404).json({ error: "Usuário não autorizado" });
-
+  if (idUsuario === userlogged) {
+    usuariosCadastrados.splice(indexToRemove, 1);
+    userlogged = undefined;
+    return res.send("Usuário " + idUsuario +  "  removido com sucesso!");
   }
 
-  if(idUsuario == userlogged){
-      user.splice(usuariosCadastrados, 1);
-      userlogged = undefined
-      res.send("Usuario removido com sucesso!");
-}
-})
+  res.status(401).json({ error: "Usuário " + idUsuario +  "  não autorizado" });
+});
+
 
   
 app.listen(3000, () => {
