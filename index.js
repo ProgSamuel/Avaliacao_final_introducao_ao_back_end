@@ -6,60 +6,75 @@ const usuariosCadastrados = [];
 let idUsuario = 0;
 const recados = [];
 let idRecado = 0;
-var userlogged 
+var userlogged;
 
 // Middleware para VERIFICAR se o usuário está logado
 function verificarLogin(req, res, next) {
-    if (userlogged) {
-      next();
+  if (userlogged) {
+    next();
   } else {
-    res.status(401).send('Acesso não autorizado. Faça o login primeiro.');
+    res.status(401).send("Acesso não autorizado. Faça o login primeiro.");
   }
 }
 
-app.get("/", (req, res)=> {
-  res.send(`Bem vindo a API Recados!
+app.get("/", (req, res) => {
+  const BemVindo = {
+    "Bem Vindo": "Bem vindo a API Recados!",
+    "Rotas": [
+      {
+        "Função": "Cadastrar um usuário",
+        "Rota": "/cadastrar-usuario",
+        "Método": "POST"
+      },
+      {
+        "Função": "Fazer login",
+        "Rota": "/login/:idUsuario",
+        "Método": "GET"
+      },
+      {
+        "Função": "Criar um recado",
+        "Rota": "/criarRecado/:idUsuario",
+        "Método": "POST"
+      },
+      {
+        "Função": "Listar recados",
+        "Rota": "/recados/:idUsuario",
+        "Método": "GET"
+      },
+      {
+        "Função": "Editar recado",
+        "Rota": "/recados/:idUsuario/:idRecado",
+        "Método": "PUT"
+      },
+      {
+        "Função": "Deletar recado",
+        "Rota": "/recados/:idUsuario/:idRecado",
+        "Método": "DELETE"
+      },
+      {
+        "Função": "Deletar perfil",
+        "Rota": "/delete/:idUsuario",
+        "Método": "DELETE"
+      },
+      {
+        "Função": "Sair do perfil",
+        "Rota": "/sair/:idUsuario",
+        "Método": "DELETE"
+      }
+    ]
+  };
   
-  Abaixo está as rotas e o método que você precisa usar!
-  
-  Função:Cadastrar um usuário:
-  Rota: /cadastrar-usuario
-  Método: POST
+});
 
-  Função:Fazer login
-  Rota: /login/:idUsuario
-  Método: GET
-   
-  Função: Criar um recado
-  Rota: /criarRecado/:idUsuario
-  Método: POST
-   
-  Função: Listar recados
-  Rota: /recados/:idUsuario
-  Método: GET
-   
-  Função: Editar recado
-  Rota: /recados/:idUsuario/:idRecado
-  Método: PUT
-
-  Função: Deletar recado
-  Rota: /recados/:idUsuario/:idRecado
-  Método:DELETE
-   
-  
-  `)
-})
-
-//  ROTA CRIAR USUÁRIO 
-app.post("/cadastrar-usuario",(req, res) => {
+//  ROTA CRIAR USUÁRIO
+app.post("/cadastrar-usuario", (req, res) => {
   const nome = req.body.nome;
   const email = req.body.email;
   const senha = req.body.senha;
-
-
-  const novousuario = { nome, email, senha, idUsuario, recados, userlogged };
+  const novousuario = { nome, email, senha, idUsuario, recados };
 
   if (nome === undefined || email === undefined || senha === undefined) {
+    res.status(401);
     res.send(`Insira um dado válido. Veja o exemplo abaixo:
 
               { 
@@ -67,32 +82,35 @@ app.post("/cadastrar-usuario",(req, res) => {
                 "email": "exemplo@email.com",
                 "senha": "senha"
               }`);
-  } 
+  }
 
- const emailEncontrado = usuariosCadastrados.find((usuario) => usuario.email === email);
+  const emailEncontrado = usuariosCadastrados.find(
+    (usuario) => usuario.email === email
+  );
 
- if (emailEncontrado) {
-  res.send(`O e-mail: ${novousuario.email} já está cadastrado`)
- } else {
-  usuariosCadastrados.push(novousuario);
-  idUsuario++;
-  res.send('Usuário cadastrado com sucesso')
- }
- console.log(usuariosCadastrados);
- console.log('------------------------------');
-
+  if (emailEncontrado) {
+    res.status(404).send(`O e-mail: ${novousuario.email} já está cadastrado`);
+  } else {
+    usuariosCadastrados.push(novousuario);
+    idUsuario++;
+    res.send(
+      `Usuário cadastrado com sucesso! 
+      
+      O seu idUsuario é: ${novousuario.idUsuario}`
+    );
+  }
 });
 
-//ROTA LOGIN 
+//ROTA LOGIN
 app.get("/login/:idUsuario", (req, res) => {
-  const idUsuario = parseInt(req.params.idUsuario); 
-
-  const encontrarUsuario = usuariosCadastrados.find((usuario) => usuario.idUsuario === idUsuario);
-
+  const idUsuario = parseInt(req.params.idUsuario);
+  const encontrarUsuario = usuariosCadastrados.find(
+    (usuario) => usuario.idUsuario === idUsuario
+  );
   const { email, senha } = req.body;
 
   if (email === undefined || senha === undefined) {
-    res.send(`Tentativa inválida!
+    res.status(404).send(`Tentativa inválida!
       Forneça o id do usuário após a rota e no body(json) envie o email e a senha:
 
       {
@@ -102,180 +120,182 @@ app.get("/login/:idUsuario", (req, res) => {
     `);
   } else {
     if (encontrarUsuario) {
-      if (encontrarUsuario.email === email && encontrarUsuario.senha === senha) {
-
-        userlogged = encontrarUsuario.idUsuario
-        console.log("--- Login efetuado ---");
-        console.log(usuariosCadastrados);
-        res.send('Login efetuado com sucesso');
-        return 
-
+      if (
+        encontrarUsuario.email === email &&
+        encontrarUsuario.senha === senha
+      ) {
+        userlogged = encontrarUsuario.idUsuario;
+        return res.send("Login efetuado com sucesso");
       } else {
-        res.status(404).json({ error: "Verifique as informações e tente novamente" });
+        return res
+          .status(404)
+          .send(`ERRO: Verifique as informações e tente novamente`);
       }
     } else {
-      res.status(404).json({ error: "Usuário não encontrado" });
-      
+      res.status(401).send(`Usuário não encontrado`);
     }
   }
 });
 
 // Rota listar usuários cadastrados
-app.get("/cadastrados", (req, res)=> {
-  res.send(usuariosCadastrados)
-})
+app.get("/cadastrados", (req, res) => {
+  res.send(usuariosCadastrados);
+});
 
-//ROTA  CRIAR RECADOS 
-app.post("/criarRecado/:idUsuario", verificarLogin, (req, res)=> {
-  const idUsuario = parseInt(req.params.idUsuario); 
-  const encontrarUsuario = usuariosCadastrados.find((usuario) => usuario.idUsuario === idUsuario);
-  if(!encontrarUsuario){ res.send('Usuário não encontrado')}
-  if(idUsuario !== userlogged ){
-    res.status(404).json({ error: "Usuário não autorizado" });
+//ROTA  CRIAR RECADOS
+app.post("/criarRecado/:idUsuario", verificarLogin, (req, res) => {
+  const idUsuario = parseInt(req.params.idUsuario);
+  const encontrarUsuario = usuariosCadastrados.find(
+    (usuario) => usuario.idUsuario === idUsuario
+  );
+
+  if (!encontrarUsuario) {
+    return res.status(401).send(`Usuário não encontrado`);
+  }
+  if (idUsuario !== userlogged) {
+    return res.status(401).send(`Usuário não autorizado`);
   } else {
-    const titulo = req.body.titulo
-  const descricao = req.body.descricao
-  const novoRecado = { titulo, descricao, idRecado, idUsuario}
+    const titulo = req.body.titulo;
+    const descricao = req.body.descricao;
+    const novoRecado = { titulo, descricao, idRecado, idUsuario };
 
-  if (titulo === undefined || descricao === undefined) {
-    res.send(`Insira um dado válido. Veja o exemplo abaixo:
+    if (titulo === undefined || descricao === undefined) {
+      res.status(404).send(`Insira um dado válido. Veja o exemplo abaixo:
 
               { 
                 "titulo":"titulo1", 
                 "descricao": "descricao1"
               }`);
-  } else {
-    idRecado++
-    recados.push(novoRecado)
-    res.send('Novo recado cadastrado com sucesso')
-    console.log(recados);
-    console.log(`----------------------`);
-  }
-  }
-
-
-  
-})
-
-//Rota para LISTAR recados de um usuario 
-app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
-  const idUsuario = parseInt(req.params.idUsuario);
-  if(idUsuario !== userlogged ){
-    res.status(404).json({ error: "Usuario não autorizado" });
-  }
-
-  const usuario = usuariosCadastrados.find((user) => user.idUsuario === idUsuario);
-  const recadosDoUsuario = recados.filter((recado) => recado.idUsuario === idUsuario);
-
-  if (!usuario) {
-    res.status(404).json({ error: "Usuario não encontrado" });
-  } else {
-
-    res.status(200).json({ mensagem: "Recados encontrados", recados: recadosDoUsuario });
+    } else {
+      idRecado++;
+      recados.push(novoRecado);
+      res.send("Novo recado cadastrado com sucesso");
+    }
   }
 });
 
-//Rota para editar um recado pelo ID 
-app.put("/recados/:idUsuario/:idRecado", verificarLogin,(req, res)=>{
-  const idUsuario = req.params.idUsuario;
-  const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(idUsuario));
-  if (!user) {
-    res.status(404).json({ error: "Usuário não encontrado" });
+//Rota para LISTAR recados de um usuario
+app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
+  const idUsuario = parseInt(req.params.idUsuario);
+  if (idUsuario !== userlogged) {
+    return res.status(401).send(`Usuário não autorizado`);
   }
-  
+
+  const encontrarUsuario = usuariosCadastrados.find(
+    (user) => user.idUsuario === idUsuario
+  );
+  const recadosDoUsuario = recados.filter(
+    (recado) => recado.idUsuario === idUsuario
+  );
+
+  if (!encontrarUsuario) {
+    return res.status(401).send(`Usuário não encontrado`);
+  } else {
+    res
+      .status(200)
+      .json({ mensagem: "Recados encontrados", recados: recadosDoUsuario });
+  }
+});
+
+//Rota para editar um recado pelo ID
+app.put("/recados/:idUsuario/:idRecado", verificarLogin, (req, res) => {
+  const idUsuario = req.params.idUsuario;
+  const encontrarUsuario = usuariosCadastrados.find(
+    (user) => user.idUsuario === parseInt(idUsuario)
+  );
+  if (!encontrarUsuario) {
+    return res.status(401).send(`Usuário não encontrado`);
+  }
 
   const id = req.params.idRecado;
   const titulo = req.body.titulo;
   const descricao = req.body.descricao;
-  const recado = user.recados.find((recado) => recado.idRecado === parseInt(id));
+  const recado = encontrarUsuario.recados.find(
+    (recado) => recado.idRecado === parseInt(id)
+  );
 
-  if(idUsuario == userlogged){
+  if (idUsuario == userlogged) {
     if (!recado) {
-      res.status(404).json({ error: "Usuário não encontrado" });
+      return res.status(401).send(`Recado não encontrado`);
     }
-  
+
     recado.titulo = titulo || recado.titulo;
     recado.descricao = descricao || recado.descricao;
-  
+
     res.send({ mensagem: "Recado alterado", recado: recado });
-    
-  } if(idUsuario!== userlogged){
-    res.status(404).json({ error: "Usuário não autorizado" });
   }
+  if (idUsuario !== userlogged) {
+    return res.status(401).send(`Usuário não autorizado`);
+  }
+});
 
-})
-
-//Rota para deletar um recado pelo ID 
-app.delete("/recados/:idUsuario/:idRecado",verificarLogin,(req, res) => {
+//Rota para deletar um recado pelo ID
+app.delete("/recados/:idUsuario/:idRecado", verificarLogin, (req, res) => {
   const idUsuario = req.params.idUsuario;
-  const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(idUsuario));
-  if (!user) {
-    res.status(404).json({ error: "Usuário não encontrado" });
+  const encontrarUsuario = usuariosCadastrados.find(
+    (user) => user.idUsuario === parseInt(idUsuario)
+  );
+  if (!encontrarUsuario) {
+    return res.status(401).send(`Usuário não encontrado`);
   }
-
 
   const id = req.params.idRecado;
-  const index = user.recados.findIndex((recado) => recado.idRecado === parseInt(id));
+  const index = encontrarUsuario.recados.findIndex(
+    (recado) => recado.idRecado === parseInt(id)
+  );
 
-  if(idUsuario == userlogged){
-      if (index === -1) {
-        res.status(404).json({ error: "Usuário não encontrado" });
-          return;
-        }
-      
-        user.recados.splice(index, 1);
-        res.send("Recado removido com sucesso!" + recados);
+  if (idUsuario == userlogged) {
+    if (index === -1) {
+      return res.status(401).send(`Recado não encontrado`);
+    }
+
+    encontrarUsuario.recados.splice(index, 1);
+    res.send("Recado removido com sucesso!" + recados);
   }
 
-  if(idUsuario !== userlogged ){
-    res.status(404).json({ error: "Usuário não autorizado" });
+  if (idUsuario !== userlogged) {
+    return res.status(401).send(`Usuário não encontrado`);
   }
-
-  
-
-  
 });
 
 //Rota para deletar perfil do CRUD
 app.delete("/delete/:idUsuario", verificarLogin, (req, res) => {
-  const idUsuario = parseInt(req.params.idUsuario); 
-  const user = usuariosCadastrados.find((user) => user.idUsuario === idUsuario);
-  if (!user) {
-    return res.status(404).json({ error: "Usuário não encontrado" });
+  const idUsuario = parseInt(req.params.idUsuario);
+  const encontrarUsuario = usuariosCadastrados.find((user) => user.idUsuario === idUsuario);
+  if (!encontrarUsuario) {
+    return res.status(401).send(`Usuário não encontrado`);
   }
 
   if (idUsuario === userlogged) {
-    const indexToRemove = usuariosCadastrados.findIndex((user) => user.idUsuario === idUsuario);
+    const indexToRemove = usuariosCadastrados.findIndex(
+      (user) => user.idUsuario === idUsuario
+    );
     usuariosCadastrados.splice(indexToRemove, 1);
     userlogged = undefined;
 
-    return res.send("Usuário com o " + idUsuario +  " removido com sucesso!");
+    return res.send(`Usuário ${idUsuario} removido com sucesso!`);
   }
-
-  return res.status(401).json({ error: "Usuário " + idUsuario +" não autorizado" });
+  return res.status(401).send(`Usuário ${idUsuario} não autorizado`);
 });
 
 // Rota sair do crud
 app.delete("/sair/:idUsuario", verificarLogin, (req, res) => {
   const idUsuario = parseInt(req.params.idUsuario);
-
-  const indexToRemove = usuariosCadastrados.findIndex((user) => user.idUsuario === idUsuario);
-  if (indexToRemove === -1) {
-    return res.status(404).json({ error: "Usuário " + idUsuario +  "  não encontrado" });
+  const encontrarUsuario = usuariosCadastrados.find((user) => user.idUsuario === idUsuario);
+  if (!encontrarUsuario) {
+    return res.status(401).send(`Usuário não encontrado`);
   }
 
   if (idUsuario === userlogged) {
-    usuariosCadastrados.splice(indexToRemove, 1);
     userlogged = undefined;
-    return res.send("Usuário " + idUsuario +  "  removido com sucesso!");
+    return res
+      .status(201)
+      .send(`Logout do usuário ${idUsuario} concluído com sucesso!`);
   }
 
-  res.status(401).json({ error: "Usuário " + idUsuario +  "  não autorizado" });
+  return res.status(401).send(`Usuário ${idUsuario} não autorizado`);
 });
 
-
-  
 app.listen(3000, () => {
   console.log("Acesso a porta 3000 concuído com sucesso");
 });
-

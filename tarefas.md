@@ -1,6 +1,5 @@
 # Aplicação CRUD de recados
 
-
 # Criação de conta
 
     ○ Identificador - [ ok ] Único
