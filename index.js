@@ -63,6 +63,7 @@ app.get("/", (req, res) => {
       }
     ]
   };
+  res.send(BemVindo)
   
 });
 
