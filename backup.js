@@ -30,7 +30,7 @@ app.get("/", (req, res)=> {
   Rota: /login/:idUsuario
   Método: GET
    
-  Função: CRiar um recado
+  Função: Criar um recado
   Rota: /criarRecado/:idUsuario
   Método: POST
    
@@ -50,7 +50,7 @@ app.get("/", (req, res)=> {
   `)
 })
 
-//  ROTA CRIAR USUÁRIO - ok
+//  ROTA CRIAR USUÁRIO 
 app.post("/cadastrar-usuario",(req, res) => {
   const nome = req.body.nome;
   const email = req.body.email;
@@ -83,7 +83,7 @@ app.post("/cadastrar-usuario",(req, res) => {
 
 });
 
-//ROTA LOGIN - ok
+//ROTA LOGIN 
 app.get("/login/:idUsuario", (req, res) => {
   const idUsuario = parseInt(req.params.idUsuario); 
 
@@ -111,22 +111,27 @@ app.get("/login/:idUsuario", (req, res) => {
         return 
 
       } else {
-        res.send('Verifique as informações e tente novamente');
+        res.status(404).json({ error: "Verifique as informações e tente novamente" });
       }
     } else {
-      res.send('Usuário não encontrado');
+      res.status(404).json({ error: "Usuário não encontrado" });
+      
     }
   }
 });
 
+// Rota listar usuários cadastrados
+app.get("/cadastrados", (req, res)=> {
+  res.send(usuariosCadastrados)
+})
 
-//ROTA  CRIAR RECADOS - ok - ok
+//ROTA  CRIAR RECADOS 
 app.post("/criarRecado/:idUsuario", verificarLogin, (req, res)=> {
   const idUsuario = parseInt(req.params.idUsuario); 
   const encontrarUsuario = usuariosCadastrados.find((usuario) => usuario.idUsuario === idUsuario);
   if(!encontrarUsuario){ res.send('Usuário não encontrado')}
   if(idUsuario !== userlogged ){
-    res.send('Usuário não autorizado')
+    res.status(404).json({ error: "Usuário não autorizado" });
   } else {
     const titulo = req.body.titulo
   const descricao = req.body.descricao
@@ -152,11 +157,11 @@ app.post("/criarRecado/:idUsuario", verificarLogin, (req, res)=> {
   
 })
 
-//Rota para LISTAR recados de um usuario - ok - ok
+//Rota para LISTAR recados de um usuario 
 app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
   const idUsuario = parseInt(req.params.idUsuario);
   if(idUsuario !== userlogged ){
-    res.send('Usuário não autorizado')
+    res.status(404).json({ error: "Usuario não autorizado" });
   }
 
   const usuario = usuariosCadastrados.find((user) => user.idUsuario === idUsuario);
@@ -170,13 +175,12 @@ app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
   }
 });
 
-//Rota para editar um recado pelo ID -ok - ok
+//Rota para editar um recado pelo ID 
 app.put("/recados/:idUsuario/:idRecado", verificarLogin,(req, res)=>{
   const idUsuario = req.params.idUsuario;
   const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(idUsuario));
   if (!user) {
-    res.status(404);
-    res.send({ error: "Usuario não encontrado" });
+    res.status(404).json({ error: "Usuário não encontrado" });
   }
   
 
@@ -187,8 +191,7 @@ app.put("/recados/:idUsuario/:idRecado", verificarLogin,(req, res)=>{
 
   if(idUsuario == userlogged){
     if (!recado) {
-      res.status(404);
-      res.send({ error: "Recado não encontrado" });
+      res.status(404).json({ error: "Usuário não encontrado" });
     }
   
     recado.titulo = titulo || recado.titulo;
@@ -197,18 +200,17 @@ app.put("/recados/:idUsuario/:idRecado", verificarLogin,(req, res)=>{
     res.send({ mensagem: "Recado alterado", recado: recado });
     
   } if(idUsuario!== userlogged){
-    res.send('Usuário não autorizado')
+    res.status(404).json({ error: "Usuário não autorizado" });
   }
 
 })
 
-//Rota para deletar um recado pelo ID - ok - verificar autorização
+//Rota para deletar um recado pelo ID 
 app.delete("/recados/:idUsuario/:idRecado",verificarLogin,(req, res) => {
   const idUsuario = req.params.idUsuario;
   const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(idUsuario));
   if (!user) {
-    res.status(404);
-    res.send({ error: "Usuario não encontrado" });
+    res.status(404).json({ error: "Usuário não encontrado" });
   }
 
 
@@ -217,8 +219,7 @@ app.delete("/recados/:idUsuario/:idRecado",verificarLogin,(req, res) => {
 
   if(idUsuario == userlogged){
       if (index === -1) {
-          res.status(404);
-          res.send({ error: "Recado não encontrado" });
+        res.status(404).json({ error: "Usuário não encontrado" });
           return;
         }
       
@@ -227,12 +228,31 @@ app.delete("/recados/:idUsuario/:idRecado",verificarLogin,(req, res) => {
   }
 
   if(idUsuario !== userlogged ){
-    res.send('Usuário não autorizado')
+    res.status(404).json({ error: "Usuário não autorizado" });
   }
 
   
 
   
+});
+
+//Rota para Sair do CRUD
+app.delete("/delete/:idUsuario", verificarLogin, (req, res) => {
+  const idUsuario = parseInt(req.params.idUsuario); 
+  const user = usuariosCadastrados.find((user) => user.idUsuario === idUsuario);
+  if (!user) {
+    return res.status(404).json({ error: "Usuário não encontrado" });
+  }
+
+  if (idUsuario === userlogged) {
+    const indexToRemove = usuariosCadastrados.findIndex((user) => user.idUsuario === idUsuario);
+    usuariosCadastrados.splice(indexToRemove, 1);
+    userlogged = undefined;
+
+    return res.send("Usuário com o " + idUsuario +  " removido com sucesso!");
+  }
+
+  return res.status(401).json({ error: "Usuário " + idUsuario +" não autorizado" });
 });
 
   

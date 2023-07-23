@@ -120,6 +120,11 @@ app.get("/login/:idUsuario", (req, res) => {
   }
 });
 
+// Rota listar usuários cadastrados
+app.get("/cadastrados", (req, res)=> {
+  res.send(usuariosCadastrados)
+})
+
 //ROTA  CRIAR RECADOS 
 app.post("/criarRecado/:idUsuario", verificarLogin, (req, res)=> {
   const idUsuario = parseInt(req.params.idUsuario); 
@@ -232,25 +237,44 @@ app.delete("/recados/:idUsuario/:idRecado",verificarLogin,(req, res) => {
 });
 
 //Rota para Sair do CRUD
-app.delete("/delete/:idUsuario", verificarLogin, (req, res)=>{
+app.delete("/delete/:idUsuario", verificarLogin, (req, res) => {
+  const idUsuario = parseInt(req.params.idUsuario); 
+  const user = usuariosCadastrados.find((user) => user.idUsuario === idUsuario);
+  if (!user) {
+    return res.status(404).json({ error: "Usuário não encontrado" });
+  }
+
+  if (idUsuario === userlogged) {
+    const indexToRemove = usuariosCadastrados.findIndex((user) => user.idUsuario === idUsuario);
+    usuariosCadastrados.splice(indexToRemove, 1);
+    userlogged = undefined;
+
+    return res.send("Usuário com o " + idUsuario +  " removido com sucesso!");
+  }
+
+  return res.status(401).json({ error: "Usuário " + idUsuario +" não autorizado" });
+});
+
+
+app.delete("/sair/:idUsuario", verificarLogin, (req, res)=>{
   const idUsuario = req.params.idUsuario;
   const user = usuariosCadastrados.find((user) => user.idUsuario === parseInt(idUsuario));
   if (!user) {
     res.status(404).json({ error: "Usuário não encontrado" });
   }
 
+  if(idUsuario !== userlogged ){
+    res.status(404).json({ error: "Usuário não autorizado" });
+
+  }
+
   if(idUsuario == userlogged){
-      user.recados.splice(usuariosCadastrados, 1);
+      user.splice(usuariosCadastrados, 1);
       userlogged = undefined
       res.send("Usuario removido com sucesso!");
 }
-
-if(idUsuario !== userlogged ){
-  res.status(404).json({ error: "Usuário não autorizado" });
-
-}
-
 })
+
   
 app.listen(3000, () => {
   console.log("Acesso a porta 3000 concuído com sucesso");
