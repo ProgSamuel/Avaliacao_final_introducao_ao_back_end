@@ -16,10 +16,10 @@ function verificarLogin(req, res, next) {
     res.status(401).send("Acesso não autorizado. Faça o login primeiro.");
   }
 }
-function bemVindo (){
-  const BemVindo = {"Bem Vindo": "Bem vindo a API Recados!"}
-  const rotas = ["Rotas:"]
-  const conteudo = [ {
+const bemVindo = {
+  "Bem Vindo": "Bem vindo a API Recados!",
+  "Rotas": [
+    {
       "Função": "Cadastrar um usuário",
       "Rota": "/cadastrar-usuario",
       "Método": "POST"
@@ -58,11 +58,13 @@ function bemVindo (){
       "Função": "Sair do perfil",
       "Rota": "/sair/:idUsuario",
       "Método": "DELETE"
-    }]}
+    }
+  ]
+};
 
 
 app.get("/", (req, res) => {
-  res.send(bemVindo())
+  res.send(bemVindo)
 });
 
 //  ROTA CRIAR USUÁRIO
