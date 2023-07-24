@@ -29,3 +29,15 @@ Feito isso, basta usar a extensão thunder client, para fazer uma nova requisiç
 <pre> http://localhost:3000/ </pre>
 A partir daqui, basta seguir o passo a passo indicado.
 
+Abaixo está algumas possíveis visualizações do projeto rodando em sua home.
+
+Se acessar o link usando o navegador Mozilla Firefox, essa será sua visualização:
+<img src="./imagens/firefox.png" alt="image">
+
+Se acessar o link usando o navegador brave ou algum com base no Google Chrome, essa será sua visualização:
+<img src="./imagens/brave.png" alt="image"> 
+
+Se acessar o link usando a extensão thunder client, essa será sua visualização:
+<img src="./imagens/thunder_client.png" alt="image"> 
+
+
