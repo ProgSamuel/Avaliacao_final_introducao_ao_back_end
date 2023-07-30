@@ -103,7 +103,7 @@ app.post("/cadastrar-usuario", (req, res) => {
 });
 
 // ROTA LOGIN
-app.get("/login/", (req, res) => {
+app.post("/login/", (req, res) => {
   const { emailDoInput, senhaDoInput } = req.body;
   const encontrarUsuario = usuariosCadastrados.find((usuario) => usuario.email=== emailDoInput);
   
