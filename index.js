@@ -102,15 +102,13 @@ app.post("/cadastrar-usuario", (req, res) => {
   }
 });
 
-//ROTA LOGIN
-app.get("/login/:idUsuario", (req, res) => {
-  const idUsuario = parseInt(req.params.idUsuario);
-  const encontrarUsuario = usuariosCadastrados.find(
-    (usuario) => usuario.idUsuario === idUsuario
-  );
-  const { email, senha } = req.body;
+// ROTA LOGIN
+app.get("/login/", (req, res) => {
+  const { emailDoInput, senhaDoInput } = req.body;
+  const encontrarUsuario = usuariosCadastrados.find((usuario) => usuario.email=== emailDoInput);
+  
 
-  if (email === undefined || senha === undefined) {
+  if (emailDoInput === undefined || senhaDoInput === undefined) {
     res.status(404).send(`Tentativa inválida!
       Forneça o id do usuário após a rota e no body(json) envie o email e a senha:
 
@@ -120,21 +118,19 @@ app.get("/login/:idUsuario", (req, res) => {
       }
     `);
   } else {
-    if (encontrarUsuario) {
-      if (
-        encontrarUsuario.email === email &&
-        encontrarUsuario.senha === senha
-      ) {
-        userlogged = encontrarUsuario.idUsuario;
-        return res.send("Login efetuado com sucesso");
-      } else {
-        return res
-          .status(404)
-          .send(`ERRO: Verifique as informações e tente novamente`);
-      }
+    if(encontrarUsuario){
+        if (encontrarUsuario.email === emailDoInput &&
+            encontrarUsuario.senha === senhaDoInput) {
+                userlogged = encontrarUsuario.email;
+                return res.send("Login efetuado com sucesso");
+        } else {
+            return res
+              .status(404)
+              .send(`ERRO: Verifique as informações e tente novamente`);
+          }
     } else {
-      res.status(401).send(`Usuário não encontrado`);
-    }
+        res.status(401).send(`Usuário não encontrado`);
+      }
   }
 });
 
