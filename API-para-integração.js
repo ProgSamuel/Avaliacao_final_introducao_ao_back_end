@@ -16,47 +16,55 @@ function verificarLogin(req, res, next) {
     res.status(401).send("Acesso não autorizado. Faça o login primeiro.");
   }
 }
+const bemVindo = {
+  "Bem Vindo": "Bem vindo a API Recados!",
+  "Rotas": [
+    {
+      "Função": "Cadastrar um usuário",
+      "Rota": "/cadastrar-usuario",
+      "Método": "POST"
+    },
+    {
+      "Função": "Fazer login",
+      "Rota": "/login/:idUsuario",
+      "Método": "GET"
+    },
+    {
+      "Função": "Criar um recado",
+      "Rota": "/criarRecado/:idUsuario",
+      "Método": "POST"
+    },
+    {
+      "Função": "Listar recados",
+      "Rota": "/recados/:idUsuario",
+      "Método": "GET"
+    },
+    {
+      "Função": "Editar recado",
+      "Rota": "/recados/:idUsuario/:idRecado",
+      "Método": "PUT"
+    },
+    {
+      "Função": "Deletar recado",
+      "Rota": "/recados/:idUsuario/:idRecado",
+      "Método": "DELETE"
+    },
+    {
+      "Função": "Deletar perfil",
+      "Rota": "/delete/:idUsuario",
+      "Método": "DELETE"
+    },
+    {
+      "Função": "Sair do perfil",
+      "Rota": "/sair/:idUsuario",
+      "Método": "DELETE"
+    }
+  ]
+};
+
 
 app.get("/", (req, res) => {
-  res.send(`Bem vindo a API Recados!
-  
-Abaixo estão as rotas e os métodos necessários!
-  
-Função: Cadastrar um usuário:
-Rota: /cadastrar-usuario
-Método: POST
-
-Função: Fazer login
-Rota: /login/:idUsuario
-Método: GET
-
-Função: Criar um recado
-Rota: /criarRecado/:idUsuario
-Método: POST
-
-
-Função: Listar recados
-Rota: /recados/:idUsuario
-Método: GET
-
-
-Função: Editar recado
-Rota: /recados/:idUsuario/:idRecado
-Método: PUT
-
-Função: Deletar recado
-Rota: /recados/:idUsuario/:idRecado
-Método:DELETE
-
-Função: Deletar perfil
-Rota: /delete/:idUsuario
-Método:DELETE
-
-
-Função: Sair do perfil 
-Rota: /sair/:idUsuario
-Método:DELETE
- `);
+  res.send(bemVindo)
 });
 
 //  ROTA CRIAR USUÁRIO
@@ -94,15 +102,13 @@ app.post("/cadastrar-usuario", (req, res) => {
   }
 });
 
-//ROTA LOGIN
-app.get("/login/:idUsuario", (req, res) => {
-  const idUsuario = parseInt(req.params.idUsuario);
-  const encontrarUsuario = usuariosCadastrados.find(
-    (usuario) => usuario.idUsuario === idUsuario
-  );
-  const { email, senha } = req.body;
+// ROTA LOGIN
+app.post("/login/", (req, res) => {
+  const { emailDoInput, senhaDoInput } = req.body;
+  const encontrarUsuario = usuariosCadastrados.find((usuario) => usuario.email=== emailDoInput);
+  
 
-  if (email === undefined || senha === undefined) {
+  if (emailDoInput === undefined || senhaDoInput === undefined) {
     res.status(404).send(`Tentativa inválida!
       Forneça o id do usuário após a rota e no body(json) envie o email e a senha:
 
@@ -112,21 +118,19 @@ app.get("/login/:idUsuario", (req, res) => {
       }
     `);
   } else {
-    if (encontrarUsuario) {
-      if (
-        encontrarUsuario.email === email &&
-        encontrarUsuario.senha === senha
-      ) {
-        userlogged = encontrarUsuario.idUsuario;
-        return res.send("Login efetuado com sucesso");
-      } else {
-        return res
-          .status(404)
-          .send(`ERRO: Verifique as informações e tente novamente`);
-      }
+    if(encontrarUsuario){
+        if (encontrarUsuario.email === emailDoInput &&
+            encontrarUsuario.senha === senhaDoInput) {
+                userlogged = encontrarUsuario.email;
+                return res.send("Login efetuado com sucesso");
+        } else {
+            return res
+              .status(404)
+              .send(`ERRO: Verifique as informações e tente novamente`);
+          }
     } else {
-      res.status(401).send(`Usuário não encontrado`);
-    }
+        res.status(401).send(`Usuário não encontrado`);
+      }
   }
 });
 
