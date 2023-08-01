@@ -2,6 +2,9 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
+const cors = require ("cors")
+app.use(cors())
+
 const usuariosCadastrados = [{"nome":"João","email":"exemplojoao@email.com","senha":"senha","idUsuario":10,"recados":[]}];
 let idUsuario = 100;
 const recados = [];
