@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
-const usuariosCadastrados = [{"nome":"exemplo","email":"exemplo@email.com","senha":"senha","idUsuario":1,"recados":[]}];
+const usuariosCadastrados = [{"nome":"exemplo","email":"exemplo@email.com","senha":"senha","idUsuario":10,"recados":[]}];
 let idUsuario = 100;
 const recados = [];
 let idRecado = 100;
