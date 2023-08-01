@@ -28,7 +28,7 @@ Método: POST
 
 Função: Fazer login
 Rota: /login/:idUsuario
-Método: GET
+Método: POST
 
 Função: Criar um recado
 Rota: /criarRecado/:idUsuario
