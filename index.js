@@ -2,10 +2,10 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
-const usuariosCadastrados = [];
-let idUsuario = 0;
+const usuariosCadastrados = [{"nome":"exemplo","email":"exemplo@email.com","senha":"senha","idUsuario":1,"recados":[]}];
+let idUsuario = 100;
 const recados = [];
-let idRecado = 0;
+let idRecado = 100;
 var userlogged;
 
 // Middleware para VERIFICAR se o usuário está logado
