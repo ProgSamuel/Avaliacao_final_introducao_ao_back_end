@@ -28,7 +28,7 @@ Método: POST
 
 Função: Fazer login
 Rota: /login/:idUsuario
-Método: POST
+Método: GET
 
 Função: Criar um recado
 Rota: /criarRecado/:idUsuario
@@ -95,7 +95,7 @@ app.post("/cadastrar-usuario", (req, res) => {
 });
 
 //ROTA LOGIN
-app.post("/login/:idUsuario", (req, res) => {
+app.get("/login/:idUsuario", (req, res) => {
   const idUsuario = parseInt(req.params.idUsuario);
   const encontrarUsuario = usuariosCadastrados.find(
     (usuario) => usuario.idUsuario === idUsuario
