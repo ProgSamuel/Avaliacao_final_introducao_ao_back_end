@@ -124,9 +124,9 @@ app.post("/login/", (req, res) => {
 
 
 // Rota listar usuários cadastrados
-app.get("/cadastrados", (req, res) => {
-  res.send(usuariosCadastrados);
-});
+// app.get("/cadastrados", (req, res) => {
+//   res.send(usuariosCadastrados);
+// });
 
 //ROTA  CRIAR RECADOS
 app.post("/criarRecado/:idUsuario", verificarLogin, (req, res) => {
