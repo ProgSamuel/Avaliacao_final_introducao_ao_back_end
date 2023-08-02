@@ -2,10 +2,13 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
-const usuariosCadastrados = [];
-let idUsuario = 0;
+const cors = require ("cors")
+app.use(cors())
+
+const usuariosCadastrados = [{"nome":"João","email":"exemplojoao@email.com","senha":"senha","idUsuario":10,"recados":[]}];
+let idUsuario = 100;
 const recados = [];
-let idRecado = 0;
+let idRecado = 100;
 var userlogged;
 
 // Middleware para VERIFICAR se o usuário está logado
@@ -28,7 +31,7 @@ Método: POST
 
 Função: Fazer login
 Rota: /login/:idUsuario
-Método: GET
+Método: POST
 
 Função: Criar um recado
 Rota: /criarRecado/:idUsuario
@@ -95,40 +98,30 @@ app.post("/cadastrar-usuario", (req, res) => {
 });
 
 //ROTA LOGIN
-app.get("/login/:idUsuario", (req, res) => {
-  const idUsuario = parseInt(req.params.idUsuario);
-  const encontrarUsuario = usuariosCadastrados.find(
-    (usuario) => usuario.idUsuario === idUsuario
-  );
+app.post("/login/", (req, res) => {
   const { email, senha } = req.body;
 
   if (email === undefined || senha === undefined) {
-    res.status(404).send(`Tentativa inválida!
-      Forneça o id do usuário após a rota e no body(json) envie o email e a senha:
+    res.status(404).send(`Tentativa inválida!  Forneça o id do usuário após a rota e no body(json) envie o email e a senha:
 
-      {
-        "email": "email@example.com",
-        "senha": "123"
-      }
-    `);
+    {
+      "email": "email@example.com",
+      "senha": "123"
+    }`);
   } else {
-    if (encontrarUsuario) {
-      if (
-        encontrarUsuario.email === email &&
-        encontrarUsuario.senha === senha
-      ) {
-        userlogged = encontrarUsuario.idUsuario;
-        return res.send("Login efetuado com sucesso");
-      } else {
-        return res
-          .status(404)
-          .send(`ERRO: Verifique as informações e tente novamente`);
-      }
+    const usuarioEncontrado = usuariosCadastrados.find(
+      (usuario) => usuario.email === email && usuario.senha === senha
+    );
+
+    if (usuarioEncontrado) {
+      userlogged = usuarioEncontrado.idUsuario;
+      return res.send("Login efetuado com sucesso");
     } else {
-      res.status(401).send(`Usuário não encontrado`);
+      return res.status(404).send(`ERRO: Verifique as informações e tente novamente`);
     }
   }
 });
+
 
 // Rota listar usuários cadastrados
 app.get("/cadastrados", (req, res) => {
