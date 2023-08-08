@@ -170,17 +170,29 @@ app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
   const encontrarUsuario = usuariosCadastrados.find(
     (user) => user.idUsuario === idUsuario
   );
+  if (!encontrarUsuario) {
+    return res.status(401).send(`Usuário não encontrado`);
+  }
+
   const recadosDoUsuario = recados.filter(
     (recado) => recado.idUsuario === idUsuario
   );
 
-  if (!encontrarUsuario) {
-    return res.status(401).send(`Usuário não encontrado`);
-  } else {
-    res
-      .status(200)
-      .json({ mensagem: "Recados encontrados", recados: recadosDoUsuario });
-  }
+  // Paginação
+  const page = parseInt(req.query.page) || 1; 
+  const per_page = 5; 
+  const startingPosition = (page - 1) * per_page;
+
+  const recadosPaginados = recadosDoUsuario.slice(startingPosition, startingPosition + per_page);
+
+  res.status(200).json({
+    mensagem: "Recados encontrados",
+    recados: recadosPaginados,
+    pagina_atual: page,
+    recados_por_pagina: per_page,
+    total_recados: recadosDoUsuario.length,
+    total_paginas: Math.ceil(recadosDoUsuario.length / per_page),
+  });
 });
 
 //Rota para editar um recado pelo ID
