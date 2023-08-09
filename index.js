@@ -115,7 +115,8 @@ app.post("/login/", (req, res) => {
 
     if (usuarioEncontrado) {
       userlogged = usuarioEncontrado.idUsuario;
-      return res.send("Login efetuado com sucesso");
+      return res.redirect("/recados/" + usuarioEncontrado.idUsuario);
+      // return res.send("Login efetuado com sucesso");
     } else {
       return res.status(404).send(`ERRO: Verifique as informações e tente novamente`);
     }
@@ -161,7 +162,7 @@ app.post("/criarRecado/:idUsuario", verificarLogin, (req, res) => {
 });
 
 //Rota para LISTAR recados de um usuario
-app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
+app.post("/recados/:idUsuario", verificarLogin, (req, res) => {
   const idUsuario = parseInt(req.params.idUsuario);
   if (idUsuario !== userlogged) {
     return res.status(401).send(`Usuário não autorizado`);
@@ -180,7 +181,7 @@ app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
 
   // Paginação
   const page = parseInt(req.query.page) || 1; 
-  const per_page = 5; 
+  const per_page = parseInt(req.query.per_page) || 5; 
   const startingPosition = (page - 1) * per_page;
 
   const recadosPaginados = recadosDoUsuario.slice(startingPosition, startingPosition + per_page);
