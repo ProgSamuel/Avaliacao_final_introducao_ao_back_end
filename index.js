@@ -162,7 +162,7 @@ app.post("/criarRecado/:idUsuario", verificarLogin, (req, res) => {
 });
 
 //Rota para LISTAR recados de um usuario
-app.post("/recados/:idUsuario", verificarLogin, (req, res) => {
+app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
   const idUsuario = parseInt(req.params.idUsuario);
   if (idUsuario !== userlogged) {
     return res.status(401).send(`Usuário não autorizado`);
