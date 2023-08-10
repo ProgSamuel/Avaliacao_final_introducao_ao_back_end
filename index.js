@@ -116,8 +116,8 @@ app.post("/login/", (req, res) => {
     if (usuarioEncontrado) {
       userlogged = usuarioEncontrado.idUsuario;
       console.log( usuarioEncontrado.email, usuarioEncontrado.idUsuario);
-      return res.redirect("/recados/" + usuarioEncontrado.idUsuario);
-      // return res.send("Login efetuado com sucesso");
+      // return res.redirect("/recados/" + usuarioEncontrado.idUsuario);
+      return res.send("Login efetuado com sucesso");
     } else {
       return res.status(404).send(`ERRO: Verifique as informações e tente novamente`);
     }
