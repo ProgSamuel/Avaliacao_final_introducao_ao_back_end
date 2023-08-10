@@ -8,9 +8,39 @@ app.use(cors())
 
 let idUsuario = 100;
 const recados = [{
+  "titulo": "titulo0",
+  "descricao": "descricao1",
+  "idRecado": 80,
+  "idUsuario": 10
+},
+{
+  "titulo": "titulo0",
+  "descricao": "descricao1",
+  "idRecado": 81,
+  "idUsuario": 10
+},
+{
+  "titulo": "titulo0",
+  "descricao": "descricao1",
+  "idRecado": 82,
+  "idUsuario": 10
+},
+{
   "titulo": "titulo1",
   "descricao": "descricao1",
-  "idRecado": 95,
+  "idRecado": 83,
+  "idUsuario": 10
+},
+{
+  "titulo": "titulo1",
+  "descricao": "descricao1",
+  "idRecado": 84,
+  "idUsuario": 10
+},
+{
+  "titulo": "titulo1",
+  "descricao": "descricao1",
+  "idRecado": 85,
   "idUsuario": 10
 },
 {
