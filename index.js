@@ -176,6 +176,8 @@ app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
     return res.status(401).send(`Usuário não encontrado`);
   }
 
+  console.log(encontrarUsuario);
+
   const recadosDoUsuario = recados.filter(
     (recado) => recado.idUsuario === idUsuario
   );
