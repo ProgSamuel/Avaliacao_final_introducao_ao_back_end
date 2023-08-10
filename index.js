@@ -188,6 +188,7 @@ app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
 
   res.status(200).json({
     mensagem: "Recados encontrados",
+    usuario: encontrarUsuario.idUsuario,
     recados: recadosPaginados,
     pagina_atual: page,
     recados_por_pagina: per_page,
