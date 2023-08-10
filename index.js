@@ -115,6 +115,7 @@ app.post("/login/", (req, res) => {
 
     if (usuarioEncontrado) {
       userlogged = usuarioEncontrado.idUsuario;
+      console.log( usuarioEncontrado.email, usuarioEncontrado.idUsuarios);
       return res.redirect("/recados/" + usuarioEncontrado.idUsuario);
       // return res.send("Login efetuado com sucesso");
     } else {
