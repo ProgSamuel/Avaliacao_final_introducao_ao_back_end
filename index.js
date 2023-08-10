@@ -5,7 +5,38 @@ app.use(express.json());
 const cors = require ("cors")
 app.use(cors())
 
-const usuariosCadastrados = [{"nome":"João","email":"exemplojoao@email.com","senha":"senha","idUsuario":10,"recados":[]}];
+const usuariosCadastrados = [{"nome":"João","email":"exemplojoao@email.com","senha":"senha","idUsuario":10,"recados": [
+  {
+    "titulo": "titulo1",
+    "descricao": "descricao1",
+    "idRecado": 100,
+    "idUsuario": 10
+  },
+  {
+    "titulo": "titulo1",
+    "descricao": "descricao1",
+    "idRecado": 101,
+    "idUsuario": 10
+  },
+  {
+    "titulo": "titulo1",
+    "descricao": "descricao1",
+    "idRecado": 102,
+    "idUsuario": 10
+  },
+  {
+    "titulo": "titulo1",
+    "descricao": "descricao1",
+    "idRecado": 103,
+    "idUsuario": 10
+  },
+  {
+    "titulo": "titulo1",
+    "descricao": "descricao1",
+    "idRecado": 104,
+    "idUsuario": 10
+  }
+]}];
 let idUsuario = 100;
 const recados = [];
 let idRecado = 100;
