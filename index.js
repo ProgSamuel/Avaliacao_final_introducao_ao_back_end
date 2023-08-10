@@ -5,42 +5,44 @@ app.use(express.json());
 const cors = require ("cors")
 app.use(cors())
 
-const usuariosCadastrados = [{"nome":"João","email":"exemplojoao@email.com","senha":"senha","idUsuario":10,"recados": [
-  {
-    "titulo": "titulo1",
-    "descricao": "descricao1",
-    "idRecado": 100,
-    "idUsuario": 10
-  },
-  {
-    "titulo": "titulo1",
-    "descricao": "descricao1",
-    "idRecado": 101,
-    "idUsuario": 10
-  },
-  {
-    "titulo": "titulo1",
-    "descricao": "descricao1",
-    "idRecado": 102,
-    "idUsuario": 10
-  },
-  {
-    "titulo": "titulo1",
-    "descricao": "descricao1",
-    "idRecado": 103,
-    "idUsuario": 10
-  },
-  {
-    "titulo": "titulo1",
-    "descricao": "descricao1",
-    "idRecado": 104,
-    "idUsuario": 10
-  }
-]}];
+
 let idUsuario = 100;
-const recados = [];
+const recados = [{
+  "titulo": "titulo1",
+  "descricao": "descricao1",
+  "idRecado": 95,
+  "idUsuario": 10
+},
+{
+  "titulo": "titulo1",
+  "descricao": "descricao1",
+  "idRecado": 96,
+  "idUsuario": 10
+},
+{
+  "titulo": "titulo1",
+  "descricao": "descricao1",
+  "idRecado": 97,
+  "idUsuario": 10
+},
+{
+  "titulo": "titulo1",
+  "descricao": "descricao1",
+  "idRecado": 98,
+  "idUsuario": 10
+},
+{
+  "titulo": "titulo1",
+  "descricao": "descricao1",
+  "idRecado": 99,
+  "idUsuario": 10
+}];
 let idRecado = 100;
 var userlogged;
+
+const usuariosCadastrados = [{
+  "nome":"João","email":"exemplojoao@email.com","senha":"senha","idUsuario":10,"recados": []}];
+
 
 // Middleware para VERIFICAR se o usuário está logado
 function verificarLogin(req, res, next) {
@@ -136,9 +138,9 @@ app.post("/login/", (req, res) => {
     res.status(404).send(`Tentativa inválida!  Forneça o id do usuário após a rota e no body(json) envie o email e a senha:
 
     {
-      "email": "email@example.com",
-      "senha": "123"
-    }`);
+      "email": "exemplojoao@email.com",
+      "senha": "senha"
+      }`);
   } else {
     const usuarioEncontrado = usuariosCadastrados.find(
       (usuario) => usuario.email === email && usuario.senha === senha
