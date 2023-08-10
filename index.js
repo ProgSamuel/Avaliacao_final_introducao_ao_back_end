@@ -5,18 +5,15 @@ app.use(express.json());
 const cors = require ("cors")
 app.use(cors())
 
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
-
 const usuariosCadastrados = [{"nome":"João","email":"exemplojoao@email.com","senha":"senha","idUsuario":10,"recados":[]}];
 let idUsuario = 100;
 const recados = [];
 let idRecado = 100;
-var usuariologado;
+var userlogged;
 
 // Middleware para VERIFICAR se o usuário está logado
 function verificarLogin(req, res, next) {
-  if (usuariologado) {
+  if (userlogged) {
     next();
   } else {
     res.status(401).send("Acesso não autorizado. Faça o login primeiro.");
@@ -117,10 +114,9 @@ app.post("/login/", (req, res) => {
     );
 
     if (usuarioEncontrado) {
-      usuariologado = usuarioEncontrado.idUsuario;
-      // Defina um cookie com o idUsuario
-      res.cookie('userlogged', usuariologado);
-      return res.send("Login efetuado com sucesso");
+      userlogged = usuarioEncontrado.idUsuario;
+      return res.redirect("/recados/" + usuarioEncontrado.idUsuario);
+      // return res.send("Login efetuado com sucesso");
     } else {
       return res.status(404).send(`ERRO: Verifique as informações e tente novamente`);
     }
@@ -167,11 +163,7 @@ app.post("/criarRecado/:idUsuario", verificarLogin, (req, res) => {
 
 //Rota para LISTAR recados de um usuario
 app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
-
   const idUsuario = parseInt(req.params.idUsuario);
-  const userlogged = parseInt(req.cookies.userlogged);
-
-console.log(idUsuario, userlogged);
   if (idUsuario !== userlogged) {
     return res.status(401).send(`Usuário não autorizado`);
   }
@@ -182,8 +174,6 @@ console.log(idUsuario, userlogged);
   if (!encontrarUsuario) {
     return res.status(401).send(`Usuário não encontrado`);
   }
-
-  console.log(encontrarUsuario);
 
   const recadosDoUsuario = recados.filter(
     (recado) => recado.idUsuario === idUsuario
@@ -198,7 +188,6 @@ console.log(idUsuario, userlogged);
 
   res.status(200).json({
     mensagem: "Recados encontrados",
-    usuario: encontrarUsuario.idUsuario,
     recados: recadosPaginados,
     pagina_atual: page,
     recados_por_pagina: per_page,
