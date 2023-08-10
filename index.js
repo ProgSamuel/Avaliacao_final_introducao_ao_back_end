@@ -12,11 +12,11 @@ const usuariosCadastrados = [{"nome":"João","email":"exemplojoao@email.com","se
 let idUsuario = 100;
 const recados = [];
 let idRecado = 100;
-var userlogged;
+var usuariologado;
 
 // Middleware para VERIFICAR se o usuário está logado
 function verificarLogin(req, res, next) {
-  if (userlogged) {
+  if (usuariologado) {
     next();
   } else {
     res.status(401).send("Acesso não autorizado. Faça o login primeiro.");
@@ -117,9 +117,9 @@ app.post("/login/", (req, res) => {
     );
 
     if (usuarioEncontrado) {
-      userlogged = usuarioEncontrado.idUsuario;
+      usuariologado = usuarioEncontrado.idUsuario;
       // Defina um cookie com o idUsuario
-      res.cookie('userlogged', userlogged);
+      res.cookie('userlogged', usuariologado);
       return res.send("Login efetuado com sucesso");
     } else {
       return res.status(404).send(`ERRO: Verifique as informações e tente novamente`);
@@ -171,7 +171,7 @@ app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
   const idUsuario = parseInt(req.params.idUsuario);
   const userlogged = parseInt(req.cookies.userlogged);
 
-
+console.log(idUsuario, userlogged);
   if (idUsuario !== userlogged) {
     return res.status(401).send(`Usuário não autorizado`);
   }
