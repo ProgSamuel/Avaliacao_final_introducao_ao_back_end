@@ -5,6 +5,9 @@ app.use(express.json());
 const cors = require ("cors")
 app.use(cors())
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 const usuariosCadastrados = [{"nome":"João","email":"exemplojoao@email.com","senha":"senha","idUsuario":10,"recados":[]}];
 let idUsuario = 100;
 const recados = [];
@@ -115,8 +118,8 @@ app.post("/login/", (req, res) => {
 
     if (usuarioEncontrado) {
       userlogged = usuarioEncontrado.idUsuario;
-      console.log( usuarioEncontrado.email, usuarioEncontrado.idUsuario);
-      // return res.redirect("/recados/" + usuarioEncontrado.idUsuario);
+      // Defina um cookie com o idUsuario
+      res.cookie('userlogged', userlogged);
       return res.send("Login efetuado com sucesso");
     } else {
       return res.status(404).send(`ERRO: Verifique as informações e tente novamente`);
@@ -164,7 +167,11 @@ app.post("/criarRecado/:idUsuario", verificarLogin, (req, res) => {
 
 //Rota para LISTAR recados de um usuario
 app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
+
   const idUsuario = parseInt(req.params.idUsuario);
+  const userlogged = parseInt(req.cookies.userlogged);
+
+
   if (idUsuario !== userlogged) {
     return res.status(401).send(`Usuário não autorizado`);
   }
