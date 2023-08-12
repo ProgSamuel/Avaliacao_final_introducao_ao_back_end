@@ -250,7 +250,7 @@ app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
   const recadosPaginados = recadosDoUsuario.slice(startingPosition, startingPosition + per_page);
 
   res.status(200).json({
-    id_do_usuario : recadosDoUsuario.idUsuario,
+    id_do_usuario : encontrarUsuario.idUsuario,
     mensagem: "Recados encontrados",
     recados: recadosPaginados,
     pagina_atual: page,
