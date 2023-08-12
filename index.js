@@ -253,7 +253,11 @@ app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
   
     mensagem: "Recados encontrados",
     recados: recadosPaginados,
+    espaço: "------------------------",
+    dados_do_usuario: "Encontrar usuario . idUsuario",
     id_do_usuario : encontrarUsuario.idUsuario, 
+    espaço: "------------------------",
+    dados_do_usuario : "Dados do Usuario",
     email : encontrarUsuario.email,
     nome : encontrarUsuario.nome,
     pagina_atual: page,
