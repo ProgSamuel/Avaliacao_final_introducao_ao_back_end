@@ -253,7 +253,9 @@ app.get("/recados/:idUsuario", verificarLogin, (req, res) => {
   
     mensagem: "Recados encontrados",
     recados: recadosPaginados,
-    id_do_usuario : encontrarUsuario,
+    id_do_usuario : encontrarUsuario.idUsuario, 
+    email : encontrarUsuario.email,
+    nome : encontrarUsuario.nome,
     pagina_atual: page,
     recados_por_pagina: per_page,
     total_recados: recadosDoUsuario.length,
