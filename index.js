@@ -8,6 +8,12 @@ app.use(cors())
 
 let idUsuario = 100;
 const recados = [{
+  "titulo": "titulo - 1",
+  "descricao": "descricao de titulo - 1",
+  "idRecado": 79,
+  "idUsuario": 11
+},
+{
   "titulo": "titulo0",
   "descricao": "descricao1",
   "idRecado": 80,
@@ -71,7 +77,8 @@ let idRecado = 100;
 var userlogged;
 
 const usuariosCadastrados = [{
-  "nome":"João","email":"exemplojoao@email.com","senha":"senha","idUsuario":10,"recados": []}];
+  "nome":"João","email":"exemplojoao@email.com","senha":"senha","idUsuario":10,"recados": []},{
+    "nome":"Pedro","email":"exemplopedro@email.com","senha":"1234","idUsuario":11,"recados": []}];
 
 
 // Middleware para VERIFICAR se o usuário está logado
